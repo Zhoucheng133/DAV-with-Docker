@@ -20,7 +20,8 @@
    ```bash
    sudo docker run -d \
    --restart always \
-   -v <主机WebDAV映射路径>:/app/dir
-   -p <WebDAV在主机上访问的端口号>:3000
-   -name dav dav
+   -v <主机WebDAV映射路径>:/app/dir \
+   --name dav \
+   -p <WebDAV在主机上访问的端口号>:3000 \
+   dav
    ```
