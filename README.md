@@ -1,8 +1,10 @@
 # WebDAV Docker部署
 
+> [!WARNING]
+> 不要在`main.go`中设置端口号和共享路径
+
+
 1. 根据你的需要修改`main.go`
-    > [!WARNING]
-    > 不要在`main.go`中设置端口号和共享路径
     ```go
     // ...
     // 设置WebDAV访问用户名
