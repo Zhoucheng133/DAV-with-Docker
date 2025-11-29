@@ -4,17 +4,22 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"golang.org/x/net/webdav"
 )
 
 func main() {
 	path := "dir"
-	// 用户名
-	username := "username"
-	// 密码
-	password := "password"
+
+	// 从环境变量读取用户名和密码
+	username := os.Getenv("USERNAME")
+	password := os.Getenv("PASSWORD")
 	port := "3000"
+
+	if username == "" || password == "" {
+		log.Fatal("Error: USERNAME and PASSWORD must be set")
+	}
 
 	fs := &webdav.Handler{
 		FileSystem: webdav.Dir(path),
@@ -35,7 +40,7 @@ func main() {
 		fs.ServeHTTP(w, req)
 	})
 
-	err := http.ListenAndServe(fmt.Sprint(":", port), nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
