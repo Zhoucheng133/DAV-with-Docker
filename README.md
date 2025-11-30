@@ -27,8 +27,27 @@ sudo docker run -d \
 zhouc1230/webdav:latest
 ```
 
+### Update with Docker Hub
+```bash
+# Pull the latest image
+docker pull zhouc1230/webdav:latest
+# Stop the old container
+docker stop dav
+# Delete the old container
+docker rm dav
+# Run the new container
+sudo docker run -d \
+--restart always \
+-v <host-path>:/app/dir \
+-e USERNAME=<webdav-username> \
+-e PASSWORD=<webdav-password> \
+-p <host-port>:3000 \
+--name dav \
+zhouc1230/webdav:latest
+```
+
 ### Manual Deployment
-1. Dowload the project to your server
+1. Download the project to your server
 2. Build the image using the following command:
    ```bash
    docker build -t dav <project-path>
@@ -53,6 +72,25 @@ zhouc1230/webdav:latest
 ### Docker Hub
 
 ```bash
+sudo docker run -d \
+--restart always \
+-v <主机WebDAV映射路径>:/app/dir \
+-e USERNAME=<WebDAV用户名> \
+-e PASSWORD=<WebDAV密码> \
+-p <WebDAV在主机上访问的端口号>:3000 \
+--name dav \
+zhouc1230/webdav:latest
+```
+
+### 更新容器
+```bash
+# 拉取最新镜像
+docker pull zhouc1230/webdav:latest
+# 停止旧容器
+docker stop dav
+# 删除旧容器
+docker rm dav
+# 启动新容器
 sudo docker run -d \
 --restart always \
 -v <主机WebDAV映射路径>:/app/dir \
