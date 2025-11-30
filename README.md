@@ -23,6 +23,7 @@ sudo docker run -d \
 -e USERNAME=<webdav-username> \
 -e PASSWORD=<webdav-password> \
 -p <host-port>:3000 \
+--name dav \
 zhouc1230/webdav:latest
 ```
 
@@ -58,6 +59,7 @@ sudo docker run -d \
 -e USERNAME=<WebDAV用户名> \
 -e PASSWORD=<WebDAV密码> \
 -p <WebDAV在主机上访问的端口号>:3000 \
+--name dav \
 zhouc1230/webdav:latest
 ```
 
