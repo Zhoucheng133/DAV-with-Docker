@@ -5,6 +5,8 @@
 This project is a WebDAV server deployed with Docker.  
 Just install Docker and use the command to deploy!
 
+Compatible with AMD64 & ARM64
+
 [English](#english) | [中文](#中文)
 
 ## English
