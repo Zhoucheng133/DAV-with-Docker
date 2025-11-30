@@ -2,41 +2,50 @@
 
 ![License](https://img.shields.io/badge/License-MIT-dark_green)
 
+This project is a WebDAV server deployed with Docker.  
+Just install Docker and use the command to deploy!
+
 [English](#english) | [中文](#中文)
 
 ## English
+
+> [!NOTE]
+> You need to replace the text inside the angle brackets (including the brackets themselves) in the following command.
 
 ### Build with Docker Hub
 
 ```bash
 sudo docker run -d \
 --restart always \
--v <Host path>:/app/dir \
--e USERNAME=<WebDAV username> \
--e PASSWORD=<WebDAV password> \
--p <Host port>:3000 \
+-v <host-path>:/app/dir \
+-e USERNAME=<webdav-username> \
+-e PASSWORD=<webdav-password> \
+-p <host-port>:3000 \
 zhouc1230/webdav:latest
 ```
 
 ### Manual Deployment
 1. Dowload the project to your server
-2. Use the following command to create an image
+2. Build the image using the following command:
    ```bash
-   docker build -t dav <project path>
+   docker build -t dav <project-path>
    ```
 3. Use the following command to create a container
    ```bash
    sudo docker run -d \
    --restart always \
-   -v <Host path>:/app/dir \
-   -e USERNAME=<WebDAV username> \
-   -e PASSWORD=<WebDAV password> \
+   -v <host-path>:/app/dir \
+   -e USERNAME=<webdav-username> \
+   -e PASSWORD=<webdav-password> \
    --name dav \
-   -p <Host port>:3000 \
+   -p <host-port>:3000 \
    dav
    ```
 
 ## 中文
+
+> [!NOTE]
+> 你需要修改下面命令中带有尖括号的内容（包括尖括号本身）
 
 ### Docker Hub
 
