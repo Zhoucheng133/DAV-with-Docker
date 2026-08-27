@@ -81,6 +81,12 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "path, username, password and root are required")
 	}
 
+	var pathExists bool
+	utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE path = ?)", item.Path).Scan(&pathExists)
+	if pathExists {
+		return JSONResponse(c, false, "path already exists")
+	}
+
 	encryptedPwd, err := utils.Encrypt(item.Password, utils.GetAESKey())
 	if err != nil {
 		return JSONResponse(c, false, "encryption failed")
@@ -90,6 +96,9 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 	_, err = utils.DB.Exec("INSERT INTO config (id, path, username, password, root) VALUES (?, ?, ?, ?, ?)",
 		id, item.Path, item.Username, encryptedPwd, item.Root)
 	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE") || strings.Contains(err.Error(), "unique") {
+			return JSONResponse(c, false, "path already exists")
+		}
 		return JSONResponse(c, false, err.Error())
 	}
 
@@ -117,6 +126,11 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 	var args []interface{}
 
 	if req.Path != nil {
+		var pathExists bool
+		utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE path = ? AND id != ?)", *req.Path, id).Scan(&pathExists)
+		if pathExists {
+			return JSONResponse(c, false, "path already exists")
+		}
 		queryParts = append(queryParts, "path = ?")
 		args = append(args, *req.Path)
 	}
