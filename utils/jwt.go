@@ -41,12 +41,7 @@ func ValidateAccessToken(tokenStr string) (string, error, bool) {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			return "", err, true
 		}
-		// Also check error string for expiration or time is in the past
-		if errors.Is(err, jwt.ErrTokenNotValidYet) {
-			return "", err, false
-		}
-		// Sometimes jwt package returns err directly if expired
-		return "", err, true // or check if expired
+		return "", err, false
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -69,7 +64,7 @@ func ValidateRefreshToken(tokenStr string) (string, error, bool) {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			return "", err, true
 		}
-		return "", err, true
+		return "", err, false
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
