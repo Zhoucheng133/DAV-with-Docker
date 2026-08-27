@@ -77,6 +77,10 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
+	if item.Path == "" || item.Username == "" || item.Password == "" || item.Root == "" {
+		return JSONResponse(c, false, "path, username, password and root are required")
+	}
+
 	encryptedPwd, err := utils.Encrypt(item.Password, utils.GetAESKey())
 	if err != nil {
 		return JSONResponse(c, false, "encryption failed")

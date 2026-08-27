@@ -32,10 +32,8 @@ func main() {
 	app.Post("/api/config/add", routes.AuthMiddleware, routes.HandleConfigAdd)
 
 	app.Post("/api/config/edit/:id", routes.AuthMiddleware, routes.HandleConfigEdit)
-	app.Post("/api/config/edit:id", routes.AuthMiddleware, routes.HandleConfigEdit)
 
 	app.Delete("/api/config/del/:id", routes.AuthMiddleware, routes.HandleConfigDel)
-	app.Delete("/api/config/del:id", routes.AuthMiddleware, routes.HandleConfigDel)
 
 	log.Println("Server starting on :3000...")
 	log.Fatal(app.Listen(":3000"))
