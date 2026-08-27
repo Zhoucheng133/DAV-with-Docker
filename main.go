@@ -30,9 +30,7 @@ func main() {
 
 	app.Get("/api/config/list", routes.AuthMiddleware, routes.HandleConfigList)
 	app.Post("/api/config/add", routes.AuthMiddleware, routes.HandleConfigAdd)
-
 	app.Post("/api/config/edit/:id", routes.AuthMiddleware, routes.HandleConfigEdit)
-
 	app.Delete("/api/config/del/:id", routes.AuthMiddleware, routes.HandleConfigDel)
 
 	log.Println("Server starting on :3000...")
