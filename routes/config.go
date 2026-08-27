@@ -23,7 +23,7 @@ type ConfigEditRequest struct {
 	Root     *string `json:"root"`
 }
 
-func JSONResponse(c *fiber.Ctx, ok bool, data interface{}) error {
+func JSONResponse(c *fiber.Ctx, ok bool, data any) error {
 	return c.JSON(fiber.Map{
 		"ok":   ok,
 		"data": data,
