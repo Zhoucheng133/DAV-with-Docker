@@ -40,7 +40,9 @@ func InitDB() error {
 		path TEXT UNIQUE,
 		username TEXT,
 		password TEXT,
-		root TEXT
+		root TEXT,
+		running INTEGER DEFAULT 0,
+		name TEXT
 	);
 	`
 

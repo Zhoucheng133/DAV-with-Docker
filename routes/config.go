@@ -14,6 +14,8 @@ type ConfigItem struct {
 	Username string `json:"username"`
 	Password string `json:"password,omitempty"`
 	Root     string `json:"root"`
+	Running  int    `json:"running"`
+	Name     string `json:"name"`
 }
 
 type ConfigEditRequest struct {
@@ -21,6 +23,8 @@ type ConfigEditRequest struct {
 	Username *string `json:"username"`
 	Password *string `json:"password"`
 	Root     *string `json:"root"`
+	Running  *int    `json:"running"`
+	Name     *string `json:"name"`
 }
 
 func JSONResponse(c *fiber.Ctx, ok bool, data any) error {
@@ -49,7 +53,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 }
 
 func HandleConfigList(c *fiber.Ctx) error {
-	rows, err := utils.DB.Query("SELECT id, path, username, root FROM config")
+	rows, err := utils.DB.Query("SELECT id, path, username, root, running, name FROM config")
 	if err != nil {
 		return JSONResponse(c, false, err.Error())
 	}
@@ -58,7 +62,7 @@ func HandleConfigList(c *fiber.Ctx) error {
 	var configs []ConfigItem
 	for rows.Next() {
 		var item ConfigItem
-		if err := rows.Scan(&item.ID, &item.Path, &item.Username, &item.Root); err != nil {
+		if err := rows.Scan(&item.ID, &item.Path, &item.Username, &item.Root, &item.Running, &item.Name); err != nil {
 			return JSONResponse(c, false, err.Error())
 		}
 		configs = append(configs, item)
@@ -77,8 +81,8 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
-	if item.Path == "" || item.Username == "" || item.Password == "" || item.Root == "" {
-		return JSONResponse(c, false, "path, username, password and root are required")
+	if item.Path == "" || item.Username == "" || item.Password == "" || item.Root == "" || item.Name == "" {
+		return JSONResponse(c, false, "path, username, password, root and name are required")
 	}
 
 	var pathExists bool
@@ -93,8 +97,8 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 	}
 
 	id := utils.GenerateID()
-	_, err = utils.DB.Exec("INSERT INTO config (id, path, username, password, root) VALUES (?, ?, ?, ?, ?)",
-		id, item.Path, item.Username, encryptedPwd, item.Root)
+	_, err = utils.DB.Exec("INSERT INTO config (id, path, username, password, root, running, name) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		id, item.Path, item.Username, encryptedPwd, item.Root, item.Running, item.Name)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE") || strings.Contains(err.Error(), "unique") {
 			return JSONResponse(c, false, "path already exists")
@@ -112,7 +116,7 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
-	if req.Path == nil && req.Username == nil && req.Password == nil && req.Root == nil {
+	if req.Path == nil && req.Username == nil && req.Password == nil && req.Root == nil && req.Running == nil && req.Name == nil {
 		return JSONResponse(c, false, "at least one parameter is required")
 	}
 
@@ -149,6 +153,14 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 	if req.Root != nil {
 		queryParts = append(queryParts, "root = ?")
 		args = append(args, *req.Root)
+	}
+	if req.Running != nil {
+		queryParts = append(queryParts, "running = ?")
+		args = append(args, *req.Running)
+	}
+	if req.Name != nil {
+		queryParts = append(queryParts, "name = ?")
+		args = append(args, *req.Name)
 	}
 
 	args = append(args, id)
