@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-40,-260)">
+        <path d="M502,401.559L502,630.441C502,680.974 460.974,722 410.441,722L181.559,722C131.026,722 90,680.974 90,630.441L90,401.559C90,351.026 131.026,310 181.559,310L410.441,310C460.974,310 502,351.026 502,401.559Z" style="fill:rgb(0,168,152);"/>
+    </g>
+    <g transform="matrix(1.13765,0,0,1.13765,-35.239,-53.3099)">
+        <g id="cloud.svg" transform="matrix(1.24,0,0,1.24,256,228.75)">
+            <g transform="matrix(1,0,0,1,-100,-100)">
+                <path d="M158.477,81.777C149.531,58.184 126.738,41.406 100.039,41.406C73.34,41.406 50.547,58.164 41.602,81.758C24.863,86.152 12.5,101.387 12.5,119.531C12.5,141.113 29.98,158.594 51.543,158.594L148.457,158.594C170.02,158.594 187.5,141.113 187.5,119.531C187.5,101.426 175.176,86.191 158.477,81.777Z" style="fill:white;fill-rule:nonzero;"/>
+            </g>
+        </g>
+        <g transform="matrix(1,0,0,1,0,-3.75)">
+            <path d="M256,300L256,334" style="fill:none;stroke:white;stroke-width:17.58px;"/>
+        </g>
+        <g transform="matrix(1.27347,0,0,1.27347,-64.2771,-103.788)">
+            <rect x="229" y="336" width="45" height="45" style="fill:white;"/>
+        </g>
+        <g transform="matrix(0.804429,0,0,1,59.7193,-3.75)">
+            <path d="M132,356.5L356,356.5" style="fill:none;stroke:white;stroke-width:19.37px;"/>
+        </g>
+    </g>
+</svg>
