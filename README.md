@@ -52,6 +52,24 @@ sudo docker run -d \
 
 ---
 
+### Example
+
+```bash
+sudo docker run -d \
+--restart always \
+-v /DATA:/DATA \
+-v /DATA/AppData/dav:/app/db \
+-e WEBUI=2211 \
+--network host \
+--name dav \
+zhouc1230/webdav:latest
+```
+| Parameter | Description |
+| :--- | :--- |
+|`WebUI`|<server_ip>:2211|
+|`Database Dir`|`/DATA/AppData/dav`|
+
+
 ## 🔄 Updating the Container / Image
 
 To update to the latest version of the WebDAV panel, run the following commands:
