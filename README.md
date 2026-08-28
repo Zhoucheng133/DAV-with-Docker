@@ -1,6 +1,6 @@
 # WebDAV Docker Management Panel
 
-<img src="frontend/public/icon.svg" width=100></img>
+<img src="assets/icon.svg" width=100></img>
 
 ![License](https://img.shields.io/badge/License-MIT-dark_green)
 
