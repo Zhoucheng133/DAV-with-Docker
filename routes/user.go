@@ -5,7 +5,7 @@ import (
 
 	"dav_docker/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -14,7 +14,7 @@ type UserRequest struct {
 	Password string `json:"password"`
 }
 
-func HandleInit(c *fiber.Ctx) error {
+func HandleInit(c fiber.Ctx) error {
 	var count int
 	err := utils.DB.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
 	if err != nil {
@@ -24,9 +24,9 @@ func HandleInit(c *fiber.Ctx) error {
 	return JSONResponse(c, true, needsInit)
 }
 
-func HandleRegister(c *fiber.Ctx) error {
+func HandleRegister(c fiber.Ctx) error {
 	var req UserRequest
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
@@ -56,9 +56,9 @@ func HandleRegister(c *fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleLogin(c *fiber.Ctx) error {
+func HandleLogin(c fiber.Ctx) error {
 	var req UserRequest
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
@@ -101,7 +101,7 @@ func HandleLogin(c *fiber.Ctx) error {
 	return JSONResponse(c, true, accessToken)
 }
 
-func HandleRefresh(c *fiber.Ctx) error {
+func HandleRefresh(c fiber.Ctx) error {
 	refreshToken := c.Cookies("dav_docker_refresh_token")
 	if refreshToken == "" {
 		return JSONResponse(c, false, "missing refresh token")
@@ -123,11 +123,11 @@ func HandleRefresh(c *fiber.Ctx) error {
 	return JSONResponse(c, true, accessToken)
 }
 
-func HandleAuth(c *fiber.Ctx) error {
+func HandleAuth(c fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleLogout(c *fiber.Ctx) error {
+func HandleLogout(c fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
 		Name:     "dav_docker_refresh_token",
 		Value:    "",

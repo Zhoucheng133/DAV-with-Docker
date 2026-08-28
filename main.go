@@ -1,13 +1,19 @@
 package main
 
 import (
+	"embed"
+	"io/fs"
 	"log"
 
 	"dav_docker/routes"
 	"dav_docker/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
+
+//go:embed frontend/dist
+var embeddedFiles embed.FS
 
 func main() {
 	if err := utils.InitDB(); err != nil {
@@ -36,6 +42,11 @@ func main() {
 	app.Delete("/api/config/del/:id", routes.AuthMiddleware, routes.HandleConfigDel)
 	app.Post("/api/config/run/:id", routes.AuthMiddleware, routes.HandleConfigRun)
 	app.Post("/api/config/stop/:id", routes.AuthMiddleware, routes.HandleConfigStop)
+
+	sub, _ := fs.Sub(embeddedFiles, "frontend/dist")
+
+	app.Get("/*", static.New("", static.Config{FS: sub}))
+	app.Get("*", static.New("index.html", static.Config{FS: sub}))
 
 	log.Println("Server starting on :3000...")
 	log.Fatal(app.Listen(":3000"))

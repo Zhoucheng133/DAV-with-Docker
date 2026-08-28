@@ -5,7 +5,7 @@ import (
 
 	"dav_docker/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type ConfigItem struct {
@@ -27,14 +27,14 @@ type ConfigEditRequest struct {
 	Name     *string `json:"name"`
 }
 
-func JSONResponse(c *fiber.Ctx, ok bool, data any) error {
+func JSONResponse(c fiber.Ctx, ok bool, data any) error {
 	return c.JSON(fiber.Map{
 		"ok":   ok,
 		"data": data,
 	})
 }
 
-func AuthMiddleware(c *fiber.Ctx) error {
+func AuthMiddleware(c fiber.Ctx) error {
 	token := c.Get("token")
 	if token == "" {
 		return JSONResponse(c, false, "missing token")
@@ -52,7 +52,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func HandleConfigList(c *fiber.Ctx) error {
+func HandleConfigList(c fiber.Ctx) error {
 	rows, err := utils.DB.Query("SELECT id, port, username, root, running, name FROM config")
 	if err != nil {
 		return JSONResponse(c, false, err.Error())
@@ -75,9 +75,9 @@ func HandleConfigList(c *fiber.Ctx) error {
 	return JSONResponse(c, true, configs)
 }
 
-func HandleConfigAdd(c *fiber.Ctx) error {
+func HandleConfigAdd(c fiber.Ctx) error {
 	var item ConfigItem
-	if err := c.BodyParser(&item); err != nil {
+	if err := c.Bind().Body(&item); err != nil {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
@@ -109,10 +109,10 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleConfigEdit(c *fiber.Ctx) error {
+func HandleConfigEdit(c fiber.Ctx) error {
 	id := c.Params("id")
 	var req ConfigEditRequest
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
@@ -173,7 +173,7 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleConfigDel(c *fiber.Ctx) error {
+func HandleConfigDel(c fiber.Ctx) error {
 	id := c.Params("id")
 	var exists bool
 	err := utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE id = ?)", id).Scan(&exists)
@@ -191,7 +191,7 @@ func HandleConfigDel(c *fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleConfigRun(c *fiber.Ctx) error {
+func HandleConfigRun(c fiber.Ctx) error {
 	id := c.Params("id")
 	var port, username, password, root string
 	err := utils.DB.QueryRow("SELECT port, username, password, root FROM config WHERE id = ?", id).Scan(&port, &username, &password, &root)
@@ -211,7 +211,7 @@ func HandleConfigRun(c *fiber.Ctx) error {
 	return JSONResponse(c, true, "")
 }
 
-func HandleConfigStop(c *fiber.Ctx) error {
+func HandleConfigStop(c fiber.Ctx) error {
 	id := c.Params("id")
 	var exists bool
 	err := utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE id = ?)", id).Scan(&exists)
