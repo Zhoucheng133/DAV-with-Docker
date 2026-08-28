@@ -4,6 +4,8 @@ import (
 	"embed"
 	"io/fs"
 	"log"
+	"os"
+	"strings"
 
 	"dav_docker/routes"
 	"dav_docker/utils"
@@ -48,6 +50,15 @@ func main() {
 	app.Get("/*", static.New("", static.Config{FS: sub}))
 	app.Get("*", static.New("index.html", static.Config{FS: sub}))
 
-	log.Println("Server starting on :3000...")
-	log.Fatal(app.Listen(":3000"))
+	port := os.Getenv("WEBUI")
+	if port == "" {
+		port = "3000"
+	}
+	addr := port
+	if !strings.HasPrefix(addr, ":") {
+		addr = ":" + addr
+	}
+
+	log.Printf("Server starting on %s...\n", addr)
+	log.Fatal(app.Listen(addr))
 }
