@@ -37,7 +37,7 @@ func InitDB() error {
 
 	CREATE TABLE IF NOT EXISTS config (
 		id TEXT PRIMARY KEY,
-		path TEXT UNIQUE,
+		port TEXT UNIQUE,
 		username TEXT,
 		password TEXT,
 		root TEXT,

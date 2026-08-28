@@ -16,7 +16,7 @@ var (
 	Servers      = make(map[string]*http.Server)
 )
 
-func StartWebDAVServer(id, path, username, encryptedPassword, root string) error {
+func StartWebDAVServer(id, port, username, encryptedPassword, root string) error {
 	ServersMutex.Lock()
 	defer ServersMutex.Unlock()
 
@@ -34,8 +34,13 @@ func StartWebDAVServer(id, path, username, encryptedPassword, root string) error
 		LockSystem: webdav.NewMemLS(),
 	}
 
+	listenAddr := fmt.Sprintf(":%s", port)
+	if len(port) > 0 && port[0] == ':' {
+		listenAddr = port
+	}
+
 	server := &http.Server{
-		Addr: path,
+		Addr: listenAddr,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			u, p, ok := req.BasicAuth()
 
@@ -54,7 +59,7 @@ func StartWebDAVServer(id, path, username, encryptedPassword, root string) error
 		}),
 	}
 
-	ln, err := net.Listen("tcp", path)
+	ln, err := net.Listen("tcp", listenAddr)
 	if err != nil {
 		return err
 	}
@@ -86,16 +91,16 @@ func StopWebDAVServer(id string) error {
 }
 
 func InitRunningWebDAVServers() {
-	rows, err := DB.Query("SELECT id, path, username, password, root FROM config WHERE running = 1")
+	rows, err := DB.Query("SELECT id, port, username, password, root FROM config WHERE running = 1")
 	if err != nil {
 		return
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var id, path, username, password, root string
-		if err := rows.Scan(&id, &path, &username, &password, &root); err == nil {
-			_ = StartWebDAVServer(id, path, username, password, root)
+		var id, port, username, password, root string
+		if err := rows.Scan(&id, &port, &username, &password, &root); err == nil {
+			_ = StartWebDAVServer(id, port, username, password, root)
 		}
 	}
 }

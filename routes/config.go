@@ -10,7 +10,7 @@ import (
 
 type ConfigItem struct {
 	ID       string `json:"id"`
-	Path     string `json:"path"`
+	Port     string `json:"port"`
 	Username string `json:"username"`
 	Password string `json:"password,omitempty"`
 	Root     string `json:"root"`
@@ -19,7 +19,7 @@ type ConfigItem struct {
 }
 
 type ConfigEditRequest struct {
-	Path     *string `json:"path"`
+	Port     *string `json:"port"`
 	Username *string `json:"username"`
 	Password *string `json:"password"`
 	Root     *string `json:"root"`
@@ -53,7 +53,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 }
 
 func HandleConfigList(c *fiber.Ctx) error {
-	rows, err := utils.DB.Query("SELECT id, path, username, root, running, name FROM config")
+	rows, err := utils.DB.Query("SELECT id, port, username, root, running, name FROM config")
 	if err != nil {
 		return JSONResponse(c, false, err.Error())
 	}
@@ -62,7 +62,7 @@ func HandleConfigList(c *fiber.Ctx) error {
 	var configs []ConfigItem
 	for rows.Next() {
 		var item ConfigItem
-		if err := rows.Scan(&item.ID, &item.Path, &item.Username, &item.Root, &item.Running, &item.Name); err != nil {
+		if err := rows.Scan(&item.ID, &item.Port, &item.Username, &item.Root, &item.Running, &item.Name); err != nil {
 			return JSONResponse(c, false, err.Error())
 		}
 		configs = append(configs, item)
@@ -81,14 +81,14 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
-	if item.Path == "" || item.Username == "" || item.Password == "" || item.Root == "" || item.Name == "" {
-		return JSONResponse(c, false, "path, username, password, root and name are required")
+	if item.Port == "" || item.Username == "" || item.Password == "" || item.Root == "" || item.Name == "" {
+		return JSONResponse(c, false, "port, username, password, root and name are required")
 	}
 
-	var pathExists bool
-	utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE path = ?)", item.Path).Scan(&pathExists)
-	if pathExists {
-		return JSONResponse(c, false, "path already exists")
+	var portExists bool
+	utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE port = ?)", item.Port).Scan(&portExists)
+	if portExists {
+		return JSONResponse(c, false, "port already exists")
 	}
 
 	encryptedPwd, err := utils.Encrypt(item.Password, utils.GetAESKey())
@@ -97,11 +97,11 @@ func HandleConfigAdd(c *fiber.Ctx) error {
 	}
 
 	id := utils.GenerateID()
-	_, err = utils.DB.Exec("INSERT INTO config (id, path, username, password, root, running, name) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		id, item.Path, item.Username, encryptedPwd, item.Root, item.Running, item.Name)
+	_, err = utils.DB.Exec("INSERT INTO config (id, port, username, password, root, running, name) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		id, item.Port, item.Username, encryptedPwd, item.Root, item.Running, item.Name)
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE") || strings.Contains(err.Error(), "unique") {
-			return JSONResponse(c, false, "path already exists")
+			return JSONResponse(c, false, "port already exists")
 		}
 		return JSONResponse(c, false, err.Error())
 	}
@@ -116,7 +116,7 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "invalid request body")
 	}
 
-	if req.Path == nil && req.Username == nil && req.Password == nil && req.Root == nil && req.Running == nil && req.Name == nil {
+	if req.Port == nil && req.Username == nil && req.Password == nil && req.Root == nil && req.Running == nil && req.Name == nil {
 		return JSONResponse(c, false, "at least one parameter is required")
 	}
 
@@ -129,14 +129,14 @@ func HandleConfigEdit(c *fiber.Ctx) error {
 	var queryParts []string
 	var args []interface{}
 
-	if req.Path != nil {
-		var pathExists bool
-		utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE path = ? AND id != ?)", *req.Path, id).Scan(&pathExists)
-		if pathExists {
-			return JSONResponse(c, false, "path already exists")
+	if req.Port != nil {
+		var portExists bool
+		utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE port = ? AND id != ?)", *req.Port, id).Scan(&portExists)
+		if portExists {
+			return JSONResponse(c, false, "port already exists")
 		}
-		queryParts = append(queryParts, "path = ?")
-		args = append(args, *req.Path)
+		queryParts = append(queryParts, "port = ?")
+		args = append(args, *req.Port)
 	}
 	if req.Username != nil {
 		queryParts = append(queryParts, "username = ?")
@@ -193,13 +193,13 @@ func HandleConfigDel(c *fiber.Ctx) error {
 
 func HandleConfigRun(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var path, username, password, root string
-	err := utils.DB.QueryRow("SELECT path, username, password, root FROM config WHERE id = ?", id).Scan(&path, &username, &password, &root)
+	var port, username, password, root string
+	err := utils.DB.QueryRow("SELECT port, username, password, root FROM config WHERE id = ?", id).Scan(&port, &username, &password, &root)
 	if err != nil {
 		return JSONResponse(c, false, "config not found")
 	}
 
-	if err := utils.StartWebDAVServer(id, path, username, password, root); err != nil {
+	if err := utils.StartWebDAVServer(id, port, username, password, root); err != nil {
 		return JSONResponse(c, false, err.Error())
 	}
 
