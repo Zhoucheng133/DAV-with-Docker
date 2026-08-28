@@ -18,6 +18,8 @@ func main() {
 		log.Fatalf("Failed to initialize environment secrets: %v", err)
 	}
 
+	utils.InitRunningWebDAVServers()
+
 	app := fiber.New()
 
 	app.Get("/api/init", routes.HandleInit)
@@ -32,6 +34,8 @@ func main() {
 	app.Post("/api/config/add", routes.AuthMiddleware, routes.HandleConfigAdd)
 	app.Post("/api/config/edit/:id", routes.AuthMiddleware, routes.HandleConfigEdit)
 	app.Delete("/api/config/del/:id", routes.AuthMiddleware, routes.HandleConfigDel)
+	app.Post("/api/config/run/:id", routes.AuthMiddleware, routes.HandleConfigRun)
+	app.Get("/api/config/stop/:id", routes.AuthMiddleware, routes.HandleConfigStop)
 
 	log.Println("Server starting on :3000...")
 	log.Fatal(app.Listen(":3000"))

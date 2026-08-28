@@ -181,7 +181,49 @@ func HandleConfigDel(c *fiber.Ctx) error {
 		return JSONResponse(c, false, "config not found")
 	}
 
+	_ = utils.StopWebDAVServer(id)
+
 	_, err = utils.DB.Exec("DELETE FROM config WHERE id = ?", id)
+	if err != nil {
+		return JSONResponse(c, false, err.Error())
+	}
+
+	return JSONResponse(c, true, "")
+}
+
+func HandleConfigRun(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var path, username, password, root string
+	err := utils.DB.QueryRow("SELECT path, username, password, root FROM config WHERE id = ?", id).Scan(&path, &username, &password, &root)
+	if err != nil {
+		return JSONResponse(c, false, "config not found")
+	}
+
+	if err := utils.StartWebDAVServer(id, path, username, password, root); err != nil {
+		return JSONResponse(c, false, err.Error())
+	}
+
+	_, err = utils.DB.Exec("UPDATE config SET running = 1 WHERE id = ?", id)
+	if err != nil {
+		return JSONResponse(c, false, err.Error())
+	}
+
+	return JSONResponse(c, true, "")
+}
+
+func HandleConfigStop(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var exists bool
+	err := utils.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM config WHERE id = ?)", id).Scan(&exists)
+	if err != nil || !exists {
+		return JSONResponse(c, false, "config not found")
+	}
+
+	if err := utils.StopWebDAVServer(id); err != nil {
+		return JSONResponse(c, false, err.Error())
+	}
+
+	_, err = utils.DB.Exec("UPDATE config SET running = 0 WHERE id = ?", id)
 	if err != nil {
 		return JSONResponse(c, false, err.Error())
 	}
