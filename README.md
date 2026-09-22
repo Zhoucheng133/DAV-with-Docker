@@ -1,29 +1,29 @@
-# WebDAV Docker Management Panel
+# WebDAV Docker
 
-<img src="assets/icon.svg" width=100></img>
+<img src="./assets/icon.svg" width=100></img>
 
 ![License](https://img.shields.io/badge/License-MIT-dark_green)
 
 [**DAV Server**](https://github.com/Zhoucheng133/DAV-Server) | **★ DAV Docker**
 
-A modern WebDAV service management panel built with Go (Fiber) and React (Vite + Tailwind). It allows you to easily create, configure, start, and stop multiple independent WebDAV service instances through a visualized web interface and manage local directories efficiently.
+一个基于 Go (Fiber) 和 React (Vite + Tailwind) 构建的现代化 WebDAV 服务管理面板。你可以通过可视化 Web 界面轻松创建、配置、启动和停止多个独立的 WebDAV 服务实例，并高效管理本地目录。
 
-## 📸 Preview
+## 📸 预览
 
-<img src="screenshots/screenshot.png" width="600" alt="Dashboard Screenshot">
+<img src="./screenshots/cn.png" width="600" alt="控制面板截图">
 
-## 🌟 Features
+## 🌟 特性
 
-- **Visual Web UI**: Easily add, edit, delete, and control multiple WebDAV services.
-- **Multi-Instance Support**: Flexibly configure different ports, directory mounts, and access permissions for each instance.
-- **Modern Interface**: Built with React, featuring responsive layout, dark mode toggle, and secure authentication.
-- **Lightweight Deployment**: Built with Go and Alpine Linux, ensuring a minimal image size and low resource consumption.
+- **可视化 Web 界面**：轻松添加、编辑、删除并控制多个 WebDAV 服务。
+- **多实例支持**：可灵活为每个实例配置不同的端口、目录挂载和访问权限。
+- **现代化界面**：基于 React 构建，支持响应式布局、深色模式切换和安全认证。
+- **轻量级部署**：基于 Go 和 Alpine Linux 构建，镜像体积小、资源占用低。
 
 ---
 
-## 🚀 Quick Installation & Deployment
+## 🚀 快速安装与部署
 
-Deploying via **Docker** is strongly recommended:
+强烈推荐通过 **Docker** 部署：
 
 ```bash
 sudo docker run -d \
@@ -36,23 +36,23 @@ sudo docker run -d \
   zhouc1230/webdav:latest
 ```
 
-> ⚠️ **Important Notes on Mount Paths:**
-> - **Path Mapping**: The left side of `-v` is your host path and the right side is the container path (e.g., `-v /mnt/disk:/DATA`). The application accesses files through the container path, so you need to convert and use the corresponding container path when configuring your WebDAV instances in the panel. (Tip: Keeping both sides identical, such as `-v /DATA:/DATA`, makes path mapping much simpler and easier to manage).
-> - **Security Warning**: **Do NOT** mount sensitive system paths (such as `/`, `/etc`, `/root`, etc.). Only mount specific data directories (e.g., `/home/user/data` or `/DATA`) to prevent security risks.
+> ⚠️ **挂载路径重要说明：**
+> - **路径映射**：`-v` 左侧为宿主机路径，右侧为容器路径（例如 `-v /mnt/disk:/DATA`）。应用程序通过容器路径访问文件，因此在面板中配置 WebDAV 实例时，需要转换并使用相应的容器路径。（提示：让两侧路径保持一致，例如 `-v /DATA:/DATA`，可使路径映射更简单、更易管理）。
+> - **安全警告**：**切勿**挂载敏感的系统路径（如 `/`、`/etc`、`/root` 等），仅挂载特定的数据目录（如 `/home/user/data` 或 `/DATA`），以避免安全风险。
 
-### Parameter Description
+### 参数说明
 
-| Parameter | Description |
+| 参数 | 说明 |
 | :--- | :--- |
-| `-v <YOUR_HOST_DATA_DIR>:<YOUR_CONTAINER_DATA_DIR>` | Mounts your host data directory into the container (e.g., `-v /DATA:/DATA`). |
-| `-v <YOUR_HOST_CONFIG_DIR>:/app/db` | Persists the application database and configuration files (e.g., `-v /DATA/AppData/dav:/app/db`). |
-| `-e WEBUI=<YOUR_WEBUI_PORT>` | Specifies the port for the Web management panel (defaults to `3000` if omitted; e.g., `-e WEBUI=2211`). |
-| `--network host` | Uses host networking mode (convenient for binding multiple instance ports). |
-| `--name dav` | Assigns a name to the Docker container. |
+| `-v <YOUR_HOST_DATA_DIR>:<YOUR_CONTAINER_DATA_DIR>` | 将宿主机数据目录挂载到容器内（例如 `-v /DATA:/DATA`）。 |
+| `-v <YOUR_HOST_CONFIG_DIR>:/app/db` | 持久化应用数据库和配置文件（例如 `-v /DATA/AppData/dav:/app/db`）。 |
+| `-e WEBUI=<YOUR_WEBUI_PORT>` | 指定 Web 管理面板端口（省略时默认为 `3000`；例如 `-e WEBUI=2211`）。 |
+| `--network host` | 使用宿主机网络模式（便于绑定多个实例端口）。 |
+| `--name dav` | 为 Docker 容器指定名称。 |
 
 ---
 
-### Example
+### 示例
 
 ```bash
 sudo docker run -d \
@@ -64,24 +64,24 @@ sudo docker run -d \
 --name dav \
 zhouc1230/webdav:latest
 ```
-| Parameter | Description |
+| 参数 | 说明 |
 | :--- | :--- |
 |`WebUI`|<server_ip>:2211|
 |`Database Dir`|`/DATA/AppData/dav`|
 
 
-## 🔄 Updating the Container / Image
+## 🔄 更新容器 / 镜像
 
-To update to the latest version of the WebDAV panel, run the following commands:
+要更新到最新版本的 WebDAV 面板，请执行以下命令：
 
 ```bash
-# 1. Stop and remove the existing container
+# 1. 停止并删除现有容器
 sudo docker stop dav && sudo docker rm dav
 
-# 2. Pull the latest image
+# 2. 拉取最新镜像
 sudo docker pull zhouc1230/webdav:latest
 
-# 3. Re-run the container using your deployment command
+# 3. 使用你的部署命令重新运行容器
 sudo docker run -d \
   --restart always \
   -v <YOUR_HOST_DATA_DIR>:<YOUR_CONTAINER_DATA_DIR> \
@@ -94,29 +94,29 @@ sudo docker run -d \
 
 ---
 
-## 💻 Access & Usage
+## 💻 访问与使用
 
-1. Once deployed, open your browser and visit `http://<your-server-ip>:<YOUR_WEBUI_PORT>` (e.g., `http://<your-server-ip>:2211`).
-2. Follow the on-screen instructions upon your first visit to register and log in to your administrator account.
-3. Configure and start your WebDAV services directly from the dashboard.
+1. 部署完成后，打开浏览器访问 `http://<your-server-ip>:<YOUR_WEBUI_PORT>`（例如 `http://<your-server-ip>:2211`）。
+2. 首次访问时，按照屏幕提示注册并登录管理员账户。
+3. 直接在控制面板中配置并启动你的 WebDAV 服务。
 
 ---
 
-## 🛠️ Local Development & Building
+## 🛠️ 本地开发与构建
 
-If you wish to contribute or build from source:
+如果你想参与贡献或从源码构建：
 
-### Requirements
+### 环境要求
 - Go 1.25+
 - Bun / Node.js
 
-### Build Docker Image
+### 构建 Docker 镜像
 ```bash
 docker build -t zhouc1230/webdav:latest -f dockerfile .
 ```
 
 ---
 
-## 📄 License
+## 📄 许可证
 
-This project is open-sourced under the [MIT License](LICENSE).
+本项目基于 [MIT 许可证](./LICENSE) 开源。
