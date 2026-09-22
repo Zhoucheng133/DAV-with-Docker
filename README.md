@@ -1,5 +1,9 @@
 # WebDAV Docker
 
+The English version of the README [HERE](./documents/en.md)
+
+## 简介
+
 <img src="./assets/icon.svg" width=100></img>
 
 ![License](https://img.shields.io/badge/License-MIT-dark_green)
@@ -7,6 +11,8 @@
 [**DAV Server**](https://github.com/Zhoucheng133/DAV-Server) | **★ DAV Docker**
 
 一个基于 Go (Fiber) 和 React (Vite + Tailwind) 构建的现代化 WebDAV 服务管理面板。你可以通过可视化 Web 界面轻松创建、配置、启动和停止多个独立的 WebDAV 服务实例，并高效管理本地目录。
+
+如果你需要的是桌面端GUI程序，见[DAV Server](https://github.com/Zhoucheng133/DAV-Server)。
 
 ## 📸 预览
 
